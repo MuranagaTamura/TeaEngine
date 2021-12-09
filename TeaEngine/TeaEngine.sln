@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31911.196
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeaEngineCore", "TeaEngineCore\TeaEngineCore.csproj", "{29BF0288-8969-43F5-B27D-D3790D4F83CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestTeaEngineCore", "MSTest\TestTeaEngineCore\TestTeaEngineCore.csproj", "{CF49EB8B-BED5-4E3D-A4AE-C05D00D68C77}"
+	ProjectSection(ProjectDependencies) = postProject
+		{29BF0288-8969-43F5-B27D-D3790D4F83CD} = {29BF0288-8969-43F5-B27D-D3790D4F83CD}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{29BF0288-8969-43F5-B27D-D3790D4F83CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29BF0288-8969-43F5-B27D-D3790D4F83CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29BF0288-8969-43F5-B27D-D3790D4F83CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29BF0288-8969-43F5-B27D-D3790D4F83CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF49EB8B-BED5-4E3D-A4AE-C05D00D68C77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF49EB8B-BED5-4E3D-A4AE-C05D00D68C77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF49EB8B-BED5-4E3D-A4AE-C05D00D68C77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF49EB8B-BED5-4E3D-A4AE-C05D00D68C77}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {31663A2D-A6DD-4892-ADB6-79BBE08983B2}
+	EndGlobalSection
+EndGlobal
