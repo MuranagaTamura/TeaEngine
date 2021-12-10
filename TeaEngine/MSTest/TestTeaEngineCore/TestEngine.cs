@@ -69,13 +69,14 @@ public class TestEngine
   [TestMethod]
   public void CallAddTest()
   {
-    // 引数の格納順は，後ろからスタックに積むようにする（第n引数，第n-1引数，...，第1引数）
-    // 戻り値は必ずスタックの先頭に配置される（関数リターン先の情報である箇所にスワップされて配置）
+    // 引数の格納順は，前からCallInfoに積まれる（第0引数，第1引数，…，第n引数）
+    // 戻り値はCallInfo.Retrunに格納されている
     // （基本的に第一引数にselfがあり，第二引数にその関数の引数が並ぶ）
     BinaryBuilder builder = new BinaryBuilder();
     builder.Init();
-    builder.LetInterger(0x02);
+    builder.SetArgs();
     builder.LetInterger(0x01);
+    builder.LetInterger(0x02);
     builder.Call("Uint8.+");
 
     // エンジン側を初期化，設定
@@ -85,7 +86,7 @@ public class TestEngine
     (bool hasError, string message) = engine.AllRun();
     Assert.IsTrue(hasError, $"実行に失敗しました => {message}");
 
-    Assert.AreEqual((uint)0, engine.Sp - 3, "スタックに確保されませんでした");
+    Assert.AreEqual((uint)0, engine.Sp - 1, "スタックに確保されませんでした");
     Assert.IsTrue(engine.Stack[engine.Sp - 1].CompareTo(new Integer(0x03)), "計算された結果が違います");
   }
 
@@ -102,6 +103,7 @@ public class TestEngine
     // 戻り値は必ずスタックの先頭に配置される
     BinaryBuilder builder = new BinaryBuilder();
     builder.Init();
+    builder.SetArgs();
     builder.LetInterger(b);
     builder.LetInterger(a);
     builder.Call("Uint8.+");
@@ -113,7 +115,7 @@ public class TestEngine
     (bool hasError, string message) = engine.AllRun();
     Assert.IsTrue(hasError, $"実行に失敗しました => {message}");
 
-    Assert.AreEqual((uint)0, engine.Sp - 3, "スタックに確保されませんでした");
+    Assert.AreEqual((uint)0, engine.Sp - 1, "スタックに確保されませんでした");
     Assert.IsTrue(engine.Stack[engine.Sp - 1].CompareTo(new Integer(result)), "計算された結果が違います");
   }
 
@@ -124,14 +126,17 @@ public class TestEngine
     // 戻り値は必ずスタックの先頭に配置される
     BinaryBuilder builder = new BinaryBuilder();
     builder.Init();
-    builder.LetInterger(0x01);
+    builder.SetArgs();
     builder.LetInterger(0x05);
+    builder.LetInterger(0x01);
     builder.Call("Uint8.-");
-    builder.LetInterger(0x02);
+    builder.SetArgs();
     builder.LetInterger(0x03);
-    builder.Call("Uint8.*");
     builder.LetInterger(0x02);
+    builder.Call("Uint8.*");
+    builder.SetArgs();
     builder.LetInterger(0x0A);
+    builder.LetInterger(0x02);
     builder.Call("Uint8./");
 
     // エンジン側を初期化，設定
@@ -141,10 +146,10 @@ public class TestEngine
     (bool hasError, string message) = engine.AllRun();
     Assert.IsTrue(hasError, $"実行に失敗しました => {message}");
 
-    Assert.AreEqual((uint)0, engine.Sp - 9, "スタックに確保されませんでした");
+    Assert.AreEqual((uint)0, engine.Sp - 3, "スタックに確保されませんでした");
     Assert.IsTrue(engine.Stack[engine.Sp - 1].CompareTo(new Integer(0x05)), "計算された結果が違います");
-    Assert.IsTrue(engine.Stack[engine.Sp - 4].CompareTo(new Integer(0x06)), "計算された結果が違います");
-    Assert.IsTrue(engine.Stack[engine.Sp - 7].CompareTo(new Integer(0x04)), "計算された結果が違います");
+    Assert.IsTrue(engine.Stack[engine.Sp - 2].CompareTo(new Integer(0x06)), "計算された結果が違います");
+    Assert.IsTrue(engine.Stack[engine.Sp - 3].CompareTo(new Integer(0x04)), "計算された結果が違います");
   }
 }
 

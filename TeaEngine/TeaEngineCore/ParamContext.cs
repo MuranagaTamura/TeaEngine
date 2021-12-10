@@ -24,18 +24,45 @@ namespace TeaEngine.Core
 
     public IValue GetArg(uint argNum)
     {
-      uint argPtr = _engine.Bp - argNum - 1;
-      if (Math.Clamp(argPtr, 0, _engine.Stack.Length - 1) != argPtr)
+      if (Math.Clamp(_engine.Bp, 0, _engine.Stack.Length - 1) != _engine.Bp)
       {
+        // _engine.Bpがスタック範囲外を指している
         return NullValue.Null;
       }
 
-      return _engine.Stack[argPtr];
+      CallInfo info = _engine.Stack[_engine.Bp] as CallInfo;
+      if (info == null)
+      {
+        // _engine.Bpが指している先がCallInfoではなかった
+        return NullValue.Null;
+      }
+
+      if (Math.Clamp(argNum, 0, info.Args.Count - 1) != argNum)
+      {
+        // argNumとして指定された引数は存在しませんでした
+        return NullValue.Null;
+      }
+
+      return info.Args[(int)argNum];
     }
 
     public void SetReturn(IValue value)
     {
-      ((CallReturn)_engine.Stack[_engine.Bp]).Return = value;
+      if (Math.Clamp(_engine.Bp, 0, _engine.Stack.Length - 1) != _engine.Bp)
+      {
+        // _engine.Bpがスタック範囲外を指している
+        return;
+      }
+
+      CallInfo info = _engine.Stack[_engine.Bp] as CallInfo;
+      if (info == null)
+      {
+        // _engine.Bpが指している先がCallInfoではなかった
+        return;
+      }
+
+      // _engine.Bpが指している先がCallInfoだった
+      info.Return = value;
     }
   }
 }

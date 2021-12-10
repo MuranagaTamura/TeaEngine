@@ -37,6 +37,11 @@ namespace TeaEngine.Core
       _codes.AddRange(context);
     }
 
+    public void SetArgs()
+    {
+      _codes.Add((byte)Engine.Opcode.SetArgs);
+    }
+
     public void Call(string name)
     {
       if(_callIds.TryGetValue(name, out uint id))

@@ -12,6 +12,7 @@ namespace TeaEngine.Core
       None,
       
       Let,
+      SetArgs,
       Call,
     }
 
@@ -25,6 +26,7 @@ namespace TeaEngine.Core
 
     private byte[] _codes = null;
     private Intrinsic _runIntrinsic = null;
+    private CallInfo _callInfo = null;
 
     public static Dictionary<uint, Intrinsic> Intrinsics { get; private set; } 
       = new Dictionary<uint, Intrinsic>();
@@ -91,13 +93,13 @@ namespace TeaEngine.Core
             }
           case RunStatus.End:
             {
-              CallReturn info = Stack[Bp] as CallReturn;
+              CallInfo info = Stack[Bp] as CallInfo;
               Sp = Bp;
               Bp = info.PreBp;
               Pc = info.PrePc;
-              if(info.Return != null)
+              if(info.Return != null || info.Return != NullValue.Null)
               {
-                // 戻り値があるなら，先頭に戻す
+                // 戻り値があるなら，先頭に格納する
                 Push(info.Return);
               }
               _runIntrinsic = null;
@@ -130,16 +132,37 @@ namespace TeaEngine.Core
               return (false, message);
             }
 
+            if(_callInfo != null)
+            {
+              // 引数の情報を格納する
+              _callInfo.Args.Add(value);
+              return (true, "");
+            }
+
             if (!Push(value))
             {
+              // 変数を確保に失敗した
               return (false, "スタックに格納することに失敗しました");
             }
+            return (true, "");
+          }
+        case Opcode.SetArgs:
+          {
+            // 引数を設定するために、スタックではなく関数情報に伝える
+            _callInfo = new CallInfo();
             return (true, "");
           }
         case Opcode.Call:
           {
             uint id = GetUint32();
-            Push(new CallReturn(Bp, Pc));
+
+            // 関数の情報をスタックに積む
+            if (_callInfo == null) _callInfo = new CallInfo();
+            _callInfo.PreBp = Bp;
+            _callInfo.PrePc = Pc;
+            Push(_callInfo);
+            _callInfo = null;
+            
             Bp = Sp - 1;
 
             if (Intrinsics.TryGetValue(id, out Intrinsic val))
